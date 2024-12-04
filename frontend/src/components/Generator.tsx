@@ -13,8 +13,8 @@ const Generator: React.FC = () => {
     setResponse("Hold up I gotchu...");
 
     try {
-      // const response = await fetch("https://braketheice.onrender.com/generate", {
-      const response = await fetch("http://localhost:5001/generate", {
+      const response = await fetch("https://braketheice.onrender.com/generate", {
+      // const response = await fetch("http://localhost:5001/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
