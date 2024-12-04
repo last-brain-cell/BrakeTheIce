@@ -10,16 +10,16 @@ const Generator: React.FC = () => {
 
   const generateResponse = async (type: "fact" | "pickup-line") => {
     setLoading(true);
-    setResponse("Thinking...");
+    setResponse("Hold up I gotchu...");
 
     try {
-      const response = await fetch("https://braketheice.onrender.com/generate", {
-      // const response = await fetch("http://localhost:5001/generate", {
+      // const response = await fetch("https://braketheice.onrender.com/generate", {
+      const response = await fetch("http://localhost:5001/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ context: `short and cool ${type} only return the ${type} and no other text` }),
+        body: JSON.stringify({ context: type }),
       });
       const data = await response.json();
       setResponse(data.response);
