@@ -1,10 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { CohereClientV2 } = require("cohere-ai");
 require("dotenv").config();
-
-
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const app = express();
 const PORT = 5001;
@@ -17,9 +15,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const cohere = new CohereClientV2({
-    token: process.env.COHERE_API_KEY,
-});
+// Initialize Gemini AI client with your API key
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Middleware
 app.use(bodyParser.json());
@@ -33,24 +31,13 @@ app.post("/generate", async (req, res) => {
     }
 
     try {
-        const response = await cohere.chat({
-            model: "command-r-plus",
-            messages: [
-                {
-                    role: "user",
-                    content: `Give me cool ${context} that would impress anyone.`,
-                },
-            ],
-        });
-
-        // Parse and return the content
-        const messageContent = response.message?.content
-            ?.map((item) => item.text)
-            .join(" ") || "No response generated.";
+        // Generate content using the Gemini model
+        const result = await model.generateContent(`Give me a creative ${context} that will definitely get a smile`);
+        const messageContent = result.response.text() || "No response generated.";
 
         res.json({ response: messageContent });
     } catch (error) {
-        console.error("Error querying Cohere:", error);
+        console.error("Error querying Google Gemini:", error);
         res.status(500).json({ error: "Failed to generate a response. Try again later." });
     }
 });
